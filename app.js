@@ -1,0 +1,20 @@
+const state={wallet:850,route:'nairobi-thika',paid:18,pending:2,collected:2340};
+const routes={
+ 'nairobi-thika':{sacco:'XYZ SACCO',vehicle:'KDA 123A',origin:'Nairobi',stops:['Ruiru','KU','Juja','Thika'],base:{Ruiru:90,KU:100,Juja:120,Thika:150}},
+ 'nairobi-kikuyu':{sacco:'Metro Shuttle',vehicle:'KCB 456B',origin:'Nairobi',stops:['Kangemi','Kinoo','Kikuyu'],base:{Kangemi:70,Kinoo:90,Kikuyu:120}}
+};
+const $=id=>document.getElementById(id);
+function money(n){return `KES ${Math.round(n)}`}
+function currentFare(){const r=routes[state.route],destination=$('destination').value;let fare=r.base[destination]||100;const hour=new Date().getHours();const peak=hour>=6&&hour<9||hour>=16&&hour<19;const timeAdj=peak?Math.max(5,Math.round(fare*.12)):0;const fuelAdj=Math.max(0,Math.round(fare*.035));return {fare:fare+timeAdj+fuelAdj,timeAdj,fuelAdj};}
+function refreshDestinations(){const r=routes[state.route];$('boardingPoint').textContent=r.origin;$('destination').innerHTML=r.stops.map(s=>`<option>${s}</option>`).join('');refreshFare()}
+function refreshFare(){const f=currentFare();$('fare').textContent=money(f.fare);$('payBtn').textContent=`Pay & confirm boarding · ${money(f.fare)}`;$('fareNote').textContent=`Route fare + ${money(f.fuelAdj)} operating-cost factor${f.timeAdj?` + ${money(f.timeAdj)} peak-time adjustment`:''}`}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2600)}
+function pay(){const f=currentFare();if(state.wallet>=f.fare){state.wallet-=f.fare;renderWallet();showReceipt(f.fare);toast('Payment confirmed — conductor can now verify your journey.')}else{const ok=confirm(`Wallet has ${money(state.wallet)}. Pay ${money(f.fare)} via simulated M-Pesa?`);if(ok){showReceipt(f.fare);toast('M-Pesa payment confirmed — journey prepaid.')}}}
+function showReceipt(fare){const r=routes[state.route];$('receipt').classList.remove('hidden');$('receipt').innerHTML=`<h3>✓ Payment confirmed</h3><p><strong>${money(fare)}</strong> · ${r.origin} → ${$('destination').value}</p><p>Vehicle ${r.vehicle} · Trip #84721</p><small>Show this confirmation to the conductor. Your journey is prepaid.</small>`}
+function renderWallet(){$('walletBalance').textContent=money(state.wallet)}
+function simulatePayment(){state.pending=Math.max(0,state.pending-1);state.paid++;state.collected+=70;renderConductor();toast('New passenger payment confirmed.')}
+function renderConductor(){ $('paidCount').textContent=state.paid;$('pendingCount').textContent=state.pending;$('collected').textContent=money(state.collected);$('passengerList').innerHTML=[['Nairobi','Thika','KES 150'],['Nairobi','KU','KES 100'],['KU','Juja','KES 70'],['KU','Thika','KES 100'],['Juja','Thika','KES 60'],['Nairobi','Ruiru','KES 90']].map((p,i)=>`<div class="passenger"><span><strong>${p[0]}</strong> → ${p[1]}<br><small>Journey #${92841+i}</small></span><span>${p[2]}</span><span class="paid">✓ PAID</span></div>`).join('')}
+$('destination').addEventListener('change',refreshFare);$('payBtn').addEventListener('click',pay);$('simulateBtn').addEventListener('click',simulatePayment);$('topUpBtn').addEventListener('click',()=>{state.wallet+=500;renderWallet();toast('KES 500 added to Feather Wallet (demo).')});
+document.querySelectorAll('.vehicle').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.vehicle').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.route=btn.dataset.route;refreshDestinations();}));
+$('modeBtn').addEventListener('click',()=>{const passenger=$('passengerView'),conductor=$('conductorView');const showConductor=conductor.classList.contains('hidden');passenger.classList.toggle('hidden',showConductor);conductor.classList.toggle('hidden',!showConductor);$('modeBtn').textContent=showConductor?'Passenger mode':'Conductor mode';if(showConductor)renderConductor()});
+refreshDestinations();renderWallet();
