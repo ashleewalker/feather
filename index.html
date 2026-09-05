@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feather — Matatu Payments</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">F</span><span>Feather</span></div>
+    <button id="modeBtn" class="ghost-btn">Conductor mode</button>
+  </header>
+
+  <main class="container">
+    <section id="passengerView">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">SMART MATATU FARES & PAYMENTS</p>
+          <h1>Pay before you ride.</h1>
+          <p class="hero-copy">Join a live vehicle trip, choose your destination, and get a prepaid fare instantly.</p>
+        </div>
+        <div class="wallet-card">
+          <span>Feather Wallet</span>
+          <strong id="walletBalance">KES 850</strong>
+          <button id="topUpBtn">Top up</button>
+        </div>
+      </div>
+
+      <section class="card journey-card">
+        <div class="section-heading">
+          <div><span class="step">01</span><h2>Join a vehicle</h2></div>
+          <span class="live-pill">● LIVE</span>
+        </div>
+        <div class="vehicle-grid">
+          <button class="vehicle active" data-route="nairobi-thika">
+            <div class="vehicle-icon">🚐</div><div><strong>XYZ SACCO</strong><span>Nairobi → Thika</span><small>KDA 123A · 8 seats</small></div>
+          </button>
+          <button class="vehicle" data-route="nairobi-kikuyu">
+            <div class="vehicle-icon">🚐</div><div><strong>Metro Shuttle</strong><span>Nairobi → Kikuyu</span><small>KCB 456B · 11 seats</small></div>
+          </button>
+        </div>
+      </section>
+
+      <section class="card journey-card">
+        <div class="section-heading"><div><span class="step">02</span><h2>Your journey</h2></div></div>
+        <div class="location-row">
+          <div class="location"><label>BOARDING</label><strong id="boardingPoint">Nairobi</strong><span>GPS-assisted</span></div>
+          <div class="route-line"><span></span></div>
+          <div class="location"><label>DESTINATION</label><select id="destination"></select></div>
+        </div>
+        <div class="fare-box">
+          <div><span>Estimated fare</span><strong id="fare">KES 150</strong></div>
+          <small id="fareNote">Includes route and time-of-day adjustment</small>
+        </div>
+        <button id="payBtn" class="primary-btn">Pay & confirm boarding · KES 150</button>
+        <p class="secure-note">Payment is collected before travel. No end-of-trip debt.</p>
+      </section>
+
+      <section id="receipt" class="card success-card hidden"></section>
+      <section class="card info-grid">
+        <div><span class="info-icon">✓</span><strong>Prepaid journeys</strong><p>Conductor confirms payment before you board.</p></div>
+        <div><span class="info-icon">↔</span><strong>Flexible destinations</strong><p>Change destination by paying only the difference.</p></div>
+        <div><span class="info-icon">₿</span><strong>Wallet refunds</strong><p>Unused fare value returns to your Feather Wallet.</p></div>
+      </section>
+    </section>
+
+    <section id="conductorView" class="hidden">
+      <div class="dashboard-head"><div><p class="eyebrow">CONDUCTOR DASHBOARD</p><h1>Trip #84721</h1><p>XYZ SACCO · Nairobi → Thika</p></div><div class="trip-status">● Boarding</div></div>
+      <div class="stats"><div class="stat"><span>Paid</span><strong id="paidCount">18</strong><small>confirmed passengers</small></div><div class="stat"><span>Pending</span><strong id="pendingCount">2</strong><small>awaiting payment</small></div><div class="stat"><span>Occupancy</span><strong>18/33</strong><small>current vehicle</small></div><div class="stat"><span>Collected</span><strong id="collected">KES 2,340</strong><small>this trip</small></div></div>
+      <div class="card"><div class="section-heading"><div><span class="step">LIVE</span><h2>Passenger payments</h2></div><button class="ghost-btn" id="simulateBtn">Simulate payment</button></div><div id="passengerList" class="passenger-list"></div></div>
+      <div class="card route-card"><div><span class="eyebrow">CURRENT LOCATION</span><h2>KU</h2><p>Next stop: Juja · 12 min</p></div><div class="route-progress"><span style="width:62%"></span></div><button class="primary-btn">End trip</button></div>
+    </section>
+  </main>
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>
